@@ -44,16 +44,12 @@
   ;; (assert (reps-sorted1? dreps))
   (->> dreps (map (fn [[user days]] 
     (let [[start _] (first days) [finish _] (last days)] 
-      [user start finish])))))
+      [user [start finish]]))) (into {})))
       
 (defn merge-day-ranges [dr1 dr2]
   "merge two day-ranges results"
-  (let [mr2 (->> dr2 (map (fn [[u s f]] [u [s f]])) (into {}))]
-    (->> dr1 (map (fn [[user s1 f1]]
-      (let [[s2 f2 :as have2] (mr2 user)
-        [start finish] (if have2 [(min s1 s2) (max f1 f2)] [s1 f1])]
-          [user start finish]))))))
-      
+	(merge-with (fn [[s1 f1] [s2 f2]] [(min s1 s2) (max f1 f2)]) dr1 dr2))
+
 (defn day-starts [dreps]
   "group users by their starting day"
   (->> dreps day-ranges (partition-by second)))      
@@ -86,21 +82,18 @@
             ;; TODO if previous tot is 0, we'll zero the multiplication
             ;; should we update tot first, or assume 1 for multiplier as below?
             ;; guess for repayment default will never be needed, can assert that
-            (let [to-tot (get tot to 1.)]
+            (let [to-tot (get tot to 1.)
+                  to-out (get outs to 1)] ; use to multiply in as well
               (* num to-bal to-tot to-soc)))))))) sum) 0.)
               
         [in-sum-back in-sum-all] (if dm (->> dm (map (fn [[from num]]
           (let [from-soc (get-soccap ustats from)] (if (zero? from-soc) [0. 0.]
             (let [from-tot (get tot from 1.) 
-                  all-term (* num from-bal from-tot from-soc) 
+                  ; from-in  (get ins from 1)
+                  all-term (* num from-tot from-soc) ; from-in ; too 
                   from-bal (get bal from 0)
                   back-term (if (<= from-bal 0) 0. (* from-bal all-term))] 
-              )))) [back-term all-term]) (apply map +)) [0. 0.])
-
-        in-sum-all (if dm (->> dm (map (fn [[from num]] 
-            (let [from-soc (get-soccap ustats from)] (if (zero? from-soc) 0.
-            (let [from-tot (get tot from 1.)]
-                (* num from-tot from-soc)))))) sum) 0.)
+              [back-term all-term]))))) (apply map +)) [0. 0.])
         
         terms [out-sum in-sum-back in-sum-all]
       
@@ -150,11 +143,9 @@
         stats (assoc stats :soc soc)
         ]
         [user stats])) users) (into {}))
-             
-    _ (errln "got ustats")
-    
+                 
     ;; day in fn is the same day as soc-day param day
-    dcaps (->> ustats (reduce (fn [res [user {:keys [day soc]}]] 
+    dcaps (->> ustats (reduce (fn [res [user {soc :soc}]] 
       (assoc! res user (assoc (or (res user) (sorted-map)) day soc))) 
       (transient dcaps)) persistent!) 
     ]
@@ -174,15 +165,20 @@
     ustats {}
     sgraph (struct s-graph dreps dments dcaps ustats)
     
+    the-first-day (comp first second)
+    the-last-day  (comp second second)
+    
     dranges (->> [dreps dments] (map day-ranges) 
-      (apply merge-day-ranges) (sort-by second))
+      (apply merge-day-ranges) vec (sort-by the-first-day))
+      
+    _ (errln "got " (count dranges) " dranges")
 
-    dstarts (->> dranges (partition-by second) 
-      (map #(vector ((comp second first) %) (map first %)))
+    dstarts (->> dranges (partition-by the-first-day) 
+      (map #(vector ((comp the-first-day first) %) (map first %)))
       (into (sorted-map)))
       
-    first-day (->> dstarts first first)  
-    last-day  (->> dranges (map last) (apply max))  
+    first-day (->> dstarts first first)
+    last-day  (->> dranges (map the-last-day) (apply max))  
     ]
     
     (errln "doing days from " first-day " to " last-day)
@@ -199,7 +195,7 @@
         ustats (merge ustats new-ustats)
         sgraph (assoc sgraph :ustats ustats)
         ]
-        (errln "day " day)
+        ; (errln "day " day)
         (soc-day sgraph params day))) 
       sgraph))))
 

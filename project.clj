@@ -8,5 +8,5 @@
     [net.1978th/tokyocabinet "1.23"]
     [com.geni/clojure-protobuf "1.0"]
     [com.geni/jiraph "1.0"]
-  ]
-  )
+    [clj-json/clj-json "0.3.0-SNAPSHOT"]
+  ])

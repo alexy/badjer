@@ -1,0 +1,10 @@
+import "clojure/protobuf/collections.proto";
+message Dailydoubles {
+  required string user = 1;
+  repeated Day    days = 2 [(map) = true];
+
+  message Day {
+    required int32   key = 1;
+	repeated double  val = 2;
+  }
+}

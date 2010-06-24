@@ -128,17 +128,21 @@
     in-init-params  {:path in-db-pathname :read-only true}
   	out-init-params {:path out-db-pathname :create true}
     in-db           (tc/db-init in-init-params)
-    out-db          (tc/db-init out-init-params)
-    ; need open to define :db
-    _ (do (tc/db-open in-db) (tc/db-open out-db))
-    in-tc           (:db in-db) 
-    out-tc          (:db out-db)] 
+    out-db          (tc/db-init out-init-params)]
+    
+    (try 
+      (tc/db-open in-db) 
+      (tc/db-open out-db)
+      (let [in-tc           (:db in-db) 
+            out-tc          (:db out-db)] 
 
-    (when (.iterinit in-tc) 
-      (loop [k (.iternext2 in-tc) i 0] 
-        (when-not (or (empty? k) (>= i n))
-          (when (and progress (zero? (mod i progress))) (err "."))
-          (tc/db-add out-db k (tc/db-get in-db k))
-          (recur (.iternext2 in-tc) (inc i)))))
-	(tc/db-close in-db)
-  	(tc/db-close out-db)))
+      (when (.iterinit in-tc) 
+        (loop [k (.iternext2 in-tc) i 0] 
+          (when-not (or (empty? k) (>= i n))
+            (when (and progress (zero? (mod i progress))) (err "."))
+            (tc/db-add out-db k (tc/db-get in-db k))
+            (recur (.iternext2 in-tc) (inc i))))))
+            
+      (finally 
+      	 (tc/db-close in-db)
+         (tc/db-close out-db)))))

@@ -140,8 +140,9 @@
       		_ (assert (= 3 (count numers)))
       		[outs* ins-back* ins-all* :as normalized] (map safe-divide numers norms)]
         	(assert (and (= 3 (count normalized)) (every? number? normalized)))
-        	(+ (* alpha soc) (* (- 1. alpha) (+ (* beta outs*) 
-          		(* (- 1. beta) (+ (* gamma ins-back*) (* (- 1. gamma) ins-all*)))))))
+        	(+ (* alpha soc) (* (- 1. alpha) 
+        	  (+ (* beta outs*) (* (- 1. beta) 
+          		  (+ (* gamma ins-back*) (* (- 1. gamma) ins-all*)))))))
          (* alpha soc))
         stats (assoc stats :soc soc)
         ]
@@ -155,10 +156,10 @@
     (assoc sgraph :ustats ustats :dcaps dcaps)))
     
 
-(defn soc-run [dreps dments & [alpha beta gamma soc-init]]
+(defn soc-run [dreps dments & [alpha maxdays beta gamma soc-init]]
   (let [
     soc-init (or soc-init 1.0)
-    alpha    (or alpha    0.00001)
+    alpha    (or alpha    0.1)
     beta     (or beta     0.5)
     gamma    (or gamma    0.5)
     
@@ -181,7 +182,8 @@
       (into (sorted-map)))
       
     first-day (->> dstarts first first)
-    last-day  (->> dranges (map the-last-day) (apply max))  
+    last-day  (->> dranges (map the-last-day) (apply max))
+    last-day  (if maxdays (min last-day (dec (+ first-day maxdays))) last-day)  
     ]
     
     (errln "doing days from " first-day " to " last-day)

@@ -29,7 +29,7 @@
     true)) 
         
 (defn reps-sorted2? [dreps] 
- (every? #(sorted-by? >= (map first (val %))) dreps))    
+  (every? #(sorted-by? <= (map first (val %))) dreps))    
 
 (defn get-in-or [data keys default]
   "should be in core as (get-in data keys :default default)"
@@ -129,6 +129,8 @@
     
     ;; NB the nested map had to be doall'ed or ot caused StackOverflowError!
     norms (reduce (fn [sums terms] (doall (map + sums terms))) (remove nil? sum-terms))
+    
+    _ (errln "day " day " norms: " (vec norms))
              
     ustats (->> terms-stats (map (fn [user [numers stats]]
       (let [

@@ -125,8 +125,8 @@
   "read first n pairs from a cabinet and write a new one with them"
   (let [
     progress        (or progress 10000)
-    in-init-params  {:path in-db-pathname :read-only true}
-  	out-init-params {:path out-db-pathname :create true}
+    in-init-params  {:path in-db-pathname :read-only true :create false :load identity}
+  	out-init-params {:path out-db-pathname :create true :dump identity}
     in-db           (tc/db-init in-init-params)
     out-db          (tc/db-init out-init-params)]
     

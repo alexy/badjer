@@ -82,15 +82,16 @@
             ;; TODO if previous tot is 0, we'll zero the multiplication
             ;; should we update tot first, or assume 1 for multiplier as below?
             ;; guess for repayment default will never be needed, can assert that
-            (let [to-tot (get tot to 1.)
-                  to-out (get outs to 1)] ; use to multiply in as well
-              (* num to-bal to-tot to-soc)))))))) sum) 0.)
+            (let [to-tot (get tot to 1)
+                  ;; to-out (get outs to 1) ; use to multiply in as well
+                  ]
+              (* num to-bal to-tot to-soc)))))))) sum -) 0.)
               
         [in-sum-back in-sum-all] (if dm (->> dm (map (fn [[from num]]
           (let [from-soc (get-soccap ustats from)] (if (zero? from-soc) [0. 0.]
-            (let [from-tot (get tot from 1.) 
+            (let [from-tot (get tot from 1)
                   ; from-in  (get ins from 1)
-                  all-term (* num from-tot from-soc) ; from-in ; too 
+                  all-term (* num from-tot from-soc) ; from-in ; times too
                   from-bal (get bal from 0)
                   back-term (if (<= from-bal 0) 0. (* from-bal all-term))] 
               [back-term all-term]))))) (apply map +)) [0. 0.])
@@ -110,7 +111,7 @@
 
       [terms stats]))))
 
-(defn safe-divide [numer denom] (if (zero? denom) 0 (/ numer denom)))      
+(defn safe-divide [numer denom] (if (zero? denom) 0. (/ numer denom)))
       
 (defn soc-day [sgraph [alpha beta gamma :as params] day]
   (assert (every? number? params))

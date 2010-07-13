@@ -43,9 +43,11 @@
 
 ;; (time (doseq [[user reps] dreps] (jiraph.tc/db-add db user (protobuf Repliers :user user :days reps))))
 
-(defn tokyo-agents-write-reps [graph proto db-pathname & [num-agents progress]]
+(defn tokyo-agents-write-reps [graph db-pathname & [proto num-agents progress]]
   (let [db (tc/db-init {:path db-pathname :create true :dump protobuf-dump :load (partial protobuf-load proto)})
-    progress (or progress 10000)
+    progress   (or progress 10000)
+    proto      (or proto Repliers)
+    num-agents (or num-agents (.. Runtime getRuntime availableProcessors))
     ;; uprots (pmap (fn [[user reps]] [user (protobuf Repliers :user user :days reps)]) graph)
 	;; _ (time (doall uprots))
 	chunk-size (int (/ (+ (count graph) num-agents) num-agents))
@@ -53,7 +55,7 @@
 	
     agents (map #(agent (struct id-chunk % [])) (range num-agents))
     agents (map (fn [agt chunk] (send agt do-chunk proto chunk progress)) agents chunks)]
-    	(errln "agents started... ")
+      (errln num-agents " agents started... ")
     	(time (apply await agents))
     	(errln "agents done!")
 		(tc/db-open db)

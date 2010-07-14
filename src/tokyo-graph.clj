@@ -69,9 +69,10 @@
 		(tc/db-close db)))  
 		
 		
-(defn tokyo-pmap-write-reps [graph proto db-pathname & [progress]]
+(defn tokyo-pmap-write-reps [graph db-pathname & [proto progress]]
   (let [db (tc/db-init {:path db-pathname :create true :dump protobuf-dump :load (partial protobuf-load proto)})
     progress (or progress 10000)
+    proto    (or proto Repliers)
     uprots (pmap (fn [[user reps]] [user (protobuf Repliers :user user :days reps)]) graph)
 	;_ (time (doall uprots))
 	]

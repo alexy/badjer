@@ -11,8 +11,9 @@
 (defn errln [ & args]
   (doto System/err (.println (apply str args)) .flush))
 
-(defn tokyo-read-reps [proto db-pathname & [str-load?]]
+(defn tokyo-read-reps [db-pathname & [proto str-load?]]
   (let [
+    proto (or proto Repliers)
     init-params (let [par {:path db-pathname :read-only true}]
       (if str-load? par 
         (merge par {:dump protobuf-dump :load (partial protobuf-load proto)})))

@@ -7,11 +7,10 @@
   (->> (for [[from m] g [day tons] m [to n] tons] [to day from n]) 
        (reduce (fn [res [to day from n]] 
          (assoc! res to (let [days     (res to (sorted-map)) 
-                              day-reps (days day {}) 
-                              n-old (day-reps from 0)] 
+                              day-reps (days day {})] 
                            (assoc days day 
-                              (assoc day-reps from (+ n-old n)))))) 
-         (transient {})) 
+                                       (assoc day-reps from n)))))
+         (transient {}))
        persistent!))
 
 

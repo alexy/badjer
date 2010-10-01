@@ -1,6 +1,5 @@
 (require '[jiraph.tc :as tc])
 (use 'protobuf)
-(use '[clojure.contrib.seq-utils :only [partition-all]])
 (require '(clj-json [core :as json]))
 
 (defprotobuf Repliers Dreps Repliers)

@@ -1,9 +1,15 @@
 (load-file "src/tokyo-graph.clj")
 (load-file "src/socrun.clj")
+(load-file "src/invert.clj")
 
-(defn load-graph [dreps-name dments-name]
-	(let [dreps (tokyo-read-reps Repliers dreps-name)
-		  dreps (->> dreps (map (fn [[k v]] [k (into (sorted-map) v)])) (into {}))
-		  dments (tokyo-read-reps Repliers dments-name)
-		  dments (->> dments (map (fn [[k v]] [k (into (sorted-map) v)])) (into {}))]
+
+(defn load-graph [dreps-name]
+  "load one graph"
+  (let [dreps (tokyo-read-reps dreps-name)]
+		    (->> dreps (map (fn [[k v]] [k (into (sorted-map) v)])) (into {}))))
+
+(defn load-graphs [dreps-name & [dments-name]]
+	(let [dreps  (load-graph dreps-name)
+	  	  dments (if dments-name (load-graph dments-name)
+	  	                         (invert-graph dreps))]
 	[dreps dments]))

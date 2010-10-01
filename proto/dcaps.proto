@@ -1,4 +1,4 @@
-import "clojure/protobuf/collections.proto";
+import "clojure/protobuf/extensions.proto";
 message Dailydoubles {
   required string user = 1;
   repeated Day    days = 2 [(map) = true];

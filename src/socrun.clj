@@ -41,7 +41,7 @@
 (defn day-ranges [dreps]
   "find the day range when each user exists in dreps
   PRE: dreps must be sorted in adjacency lists by day!"
-  ;; (assert (reps-sorted1? dreps))
+  (assert (reps-sorted1? dreps))
   (->> dreps (map (fn [[user days]] 
     (let [[start _] (first days) [finish _] (last days)] 
       [user [start finish]]))) (into {})))
@@ -83,15 +83,16 @@
             ;; should we update tot first, or assume 1 for multiplier as below?
             ;; guess for repayment default will never be needed, can assert that
             (let [to-tot (get tot to 1)
-                  ;; to-out (get outs to 1) ; use to multiply in as well
-                  ]
-              (* num to-bal to-tot to-soc)))))))) sum -) 0.)
+                  to-out (get outs to 1)
+                  term (* num to-out to-bal to-tot to-soc)]
+                  ;(errln "user: " user ", to: " to ", to-tot: " to-tot ", to-bal: " to-bal, ", to-soc: " to-soc)
+              term))))))) sum -) 0.)
               
         [in-sum-back in-sum-all] (if dm (->> dm (map (fn [[from num]]
           (let [from-soc (get-soccap ustats from)] (if (zero? from-soc) [0. 0.]
             (let [from-tot (get tot from 1)
-                  ; from-in  (get ins from 1)
-                  all-term (* num from-tot from-soc) ; from-in ; times too
+                  from-in  (get ins from 1)
+                  all-term (* num from-in from-tot from-soc) ; from-in ; times too
                   from-bal (get bal from 0)
                   back-term (if (<= from-bal 0) 0. (* from-bal all-term))] 
               [back-term all-term]))))) (apply map +)) [0. 0.])

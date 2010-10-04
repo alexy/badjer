@@ -1,3 +1,5 @@
+(ns sc)
+
 (require '[jiraph.tc :as tc])
 (use 'protobuf)
 (require '(clj-json [core :as json]))

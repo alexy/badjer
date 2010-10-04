@@ -1,3 +1,5 @@
+(ns sc)
+
 (load-file "src/tokyo-graph.clj")
 (load-file "src/socrun.clj")
 (load-file "src/invert.clj")

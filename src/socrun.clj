@@ -1,3 +1,5 @@
+(ns sc)
+
 ;; (use 'clojure.contrib.seq-utils)
 
 ;;  (time (def dreps (tokyo-read-reps Repliers "/opt/data/twitter/tokyo/dreps.hdb")))

@@ -14,4 +14,5 @@
     [clojure-protobuf "0.2.11-SNAPSHOT"]
     ]
   :tasks [protobuf.tasks]
+  :native-path "/opt/local/lib"
   )

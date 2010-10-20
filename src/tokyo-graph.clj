@@ -1,6 +1,7 @@
+(ns sc)
+
 (require '[jiraph.tc :as tc])
 (use 'protobuf)
-(use '[clojure.contrib.seq-utils :only [partition-all]])
 (require '(clj-json [core :as json]))
 
 (defprotobuf Repliers Dreps Repliers)
@@ -73,7 +74,7 @@
   (let [db (tc/db-init {:path db-pathname :create true :dump protobuf-dump :load (partial protobuf-load proto)})
     progress (or progress 10000)
     proto    (or proto Repliers)
-    uprots (pmap (fn [[user reps]] [user (protobuf Repliers :user user :days reps)]) graph)
+    uprots (pmap (fn [[user reps]] [user (protobuf proto :user user :days reps)]) graph)
 	;_ (time (doall uprots))
 	]
 		(tc/db-open db)

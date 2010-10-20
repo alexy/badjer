@@ -8,7 +8,11 @@
     [net.1978th/tokyocabinet "1.23"]
     [clojure-protobuf "0.2.11-SNAPSHOT"]
     [jiraph "0.1.3-SNAPSHOT"]
-    [clj-json/clj-json "0.3.0-SNAPSHOT"]]
-    :dev-dependencies [[clojure-protobuf "0.2.11-SNAPSHOT"]]
-    :tasks [protobuf.tasks]
+    [clj-json/clj-json "0.3.0-SNAPSHOT"]
+    ]
+  :dev-dependencies [
+    [clojure-protobuf "0.2.11-SNAPSHOT"]
+    ]
+  :tasks [protobuf.tasks]
+  :native-path "/opt/local/lib"
   )

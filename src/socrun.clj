@@ -1,4 +1,6 @@
-(use 'clojure.contrib.seq-utils)
+(ns sc)
+
+;; (use 'clojure.contrib.seq-utils)
 
 ;;  (time (def dreps (tokyo-read-reps Repliers "/opt/data/twitter/tokyo/dreps.hdb")))
 ;;  (time (def dreps (->> dreps (map (fn [[k v]] [k (into (sorted-map) v)])) (into {}))))

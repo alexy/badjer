@@ -1,4 +1,4 @@
-(defproject badger "1.0"
+(defproject badjer "1.0"
   :description "Karmic Social Capital in Clojure"
   :dependencies [
     [clojure "1.2.0"]

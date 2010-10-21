@@ -1,8 +1,8 @@
 (ns sc)
 
-(load-file "src/tokyo-graph.clj")
-(load-file "src/socrun.clj")
-(load-file "src/invert.clj")
+(require 'tokyo-graph)
+(require 'socrun)
+(require 'invert)
 
 
 (defn load-graph [dreps-name]

@@ -11,15 +11,24 @@
   (doto System/err (.print (apply str args)) .flush))
 (defn errln [ & args]
   (doto System/err (.println (apply str args)) .flush))
+  
 
-(defn tokyo-read-reps [db-pathname & [proto str-load?]]
+;; NB replace by specific arities declarations
+(defn tokyo-open [db-pathname & [proto str-load?]]
   (let [
     proto (or proto Repliers)
     init-params (let [par {:path db-pathname :read-only true}]
       (if str-load? par 
         (merge par {:dump protobuf-dump :load (partial protobuf-load proto)})))
     db (tc/db-init init-params)
-    _ (tc/db-open db)
+    _ (tc/db-open db)]
+    db))
+
+
+(defn tokyo-read-reps [db-pathname & db-args]
+  (let [
+    ;; how do we just take all args from ourselves and pass into tokyo-open?
+    db (tokyo-open db-pathname db-args)
     tc (:db db) 
     r (when (.iterinit tc) 
       (loop [k (.iternext2 tc) res [] i 0] 
@@ -29,6 +38,12 @@
               res [k (:days (jiraph.tc/db-get db k))]) (inc i))))))]
   (tc/db-close db)
   (into {} r)))
+
+
+(defn tokyo-lookup [db user]
+  (let [tc (:db db)]
+    (:days (jiraph.tc/db-get db k))))
+
 
 (defstruct id-chunk :id :chunk)
 

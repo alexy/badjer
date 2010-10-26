@@ -193,6 +193,7 @@
     (->> (range first-day (inc last-day))
       (reduce (fn [sgraph day]
       ;; inject the users first appearing in this cycle
+      (time ;; report each day's timings
       (let [ustats (:ustats sgraph)
         new-users (dstarts day)
         _ (errln "adding " (count new-users) " new users on day " day)
@@ -203,7 +204,7 @@
         sgraph (assoc sgraph :ustats ustats)
         ]
         ; (errln "day " day)
-        (soc-day sgraph params day)))
+        (soc-day sgraph params day))))
       sgraph))))
 
 ;; (def ustats (:ustats sgraph))

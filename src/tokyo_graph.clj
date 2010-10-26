@@ -40,7 +40,7 @@
   (into {} r)))
 
 
-(defn tokyo-lookup [db user]
+(defn tokyo-lookup [db k]
   (let [tc (:db db)]
     (:days (jiraph.tc/db-get db k))))
 
